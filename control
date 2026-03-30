@@ -1,0 +1,9 @@
+Package: com.buzichi.librarybasket
+Name: LibraryBasket
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Put a custom App-Library-style basket on the Home Screen.
+Maintainer: buzi chi
+Author: OpenAI
+Section: Tweaks
+Depends: mobilesubstrate
