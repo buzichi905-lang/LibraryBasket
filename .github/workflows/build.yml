@@ -1,0 +1,51 @@
+name: Build LibraryBasket
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y bash curl git perl clang make xz-utils dpkg-dev
+
+      - name: Install Theos
+        run: |
+          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+
+      - name: Show Theos info
+        run: |
+          echo "THEOS=$THEOS"
+          ls -la "$THEOS" || true
+          ls -la "$THEOS/sdks" || true
+
+      - name: Build package
+        run: |
+          export THEOS=$HOME/theos
+          make clean
+          make package FINALPACKAGE=1
+
+      - name: List packages
+        run: |
+          ls -la packages || true
+
+      - name: Upload deb
+        uses: actions/upload-artifact@v4
+        with:
+          name: LibraryBasket
+          path: packages/*.deb
+          if-no-files-found: error
