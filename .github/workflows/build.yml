@@ -3,6 +3,9 @@ name: Build LibraryBasket
 on:
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y git perl clang make ldid
+          sudo apt install -y git perl clang make
 
       - name: Setup Theos
         run: |
@@ -23,6 +26,7 @@ jobs:
 
       - name: Build package
         run: |
+          export THEOS=$HOME/theos
           make package FINALPACKAGE=1
 
       - name: Upload deb
